@@ -1,9 +1,14 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserRole } from '@shared/enums/user-role.enum';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/entities/user.entity';
+import { CredentialsDto } from './dto/credentials.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,5 +23,20 @@ export class AuthService {
     } else {
       return await this.usersService.createUser(createUserDto, UserRole.USER);
     }
+  }
+
+  async signIn(credentialsDto: CredentialsDto) {
+    const user = await this.usersService.checkCredentials(credentialsDto);
+
+    if (user === null) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
+
+    const jwtPayload = {
+      id: user.id,
+    };
+    const token = await this.jwtService.sign(jwtPayload);
+
+    return { token };
   }
 }

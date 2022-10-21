@@ -12,6 +12,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { CredentialsDto } from '@auth/dto/credentials.dto';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +21,10 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto, role: UserRole) {
+  async createUser(
+    createUserDto: CreateUserDto,
+    role: UserRole = UserRole.USER,
+  ) {
     const { email, name, password } = createUserDto;
 
     const user = this.userRepository.create();
@@ -39,6 +43,7 @@ export class UsersService {
       if (error.code.toString() === '23505') {
         throw new ConflictException('Endereço de email já está em uso');
       } else {
+        console.log(error);
         throw new InternalServerErrorException(
           'Erro ao salvar o usuário no banco de dados',
         );
@@ -76,5 +81,18 @@ export class UsersService {
 
   private async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
+  }
+
+  async checkCredentials(credentialsDto: CredentialsDto): Promise<User> {
+    const { email, password } = credentialsDto;
+    const user = await this.userRepository.findOne({
+      where: { email, status: true },
+    });
+
+    if (user && (await user.checkPassword(password))) {
+      return user;
+    } else {
+      return null;
+    }
   }
 }
