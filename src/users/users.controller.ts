@@ -1,10 +1,9 @@
-import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UsersService } from './users.service';
-import { ReturnUserDto } from './dto/return-user.dto';
-import { Public } from '@auth/decorators/public.decorator';
-import { UserRole } from '@shared/enums/user-role.enum';
 import { Role } from '@auth/decorators/role.decorator';
+import { Body, Controller, Post } from '@nestjs/common';
+import { UserRole } from '@shared/enums/user-role.enum';
+import { CreateUserDto } from './dto/create-user.dto';
+import { ReturnUserDto } from './dto/return-user.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
@@ -13,7 +12,7 @@ export class UsersController {
   @Role(UserRole.ADMIN)
   @Post('admin')
   async createAdminUser(
-    @Body(ValidationPipe) createUserDto: CreateUserDto,
+    @Body() createUserDto: CreateUserDto,
   ): Promise<ReturnUserDto> {
     const user = await this.usersService.createAdminUser(createUserDto);
     return {
@@ -24,7 +23,7 @@ export class UsersController {
 
   @Post()
   async createUser(
-    @Body(ValidationPipe) createUserDto: CreateUserDto,
+    @Body() createUserDto: CreateUserDto,
   ): Promise<ReturnUserDto> {
     const user = await this.usersService.createUser(createUserDto);
     return {

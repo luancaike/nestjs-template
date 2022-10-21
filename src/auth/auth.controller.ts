@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
@@ -19,7 +12,7 @@ export class AuthController {
   @Public()
   @Post('/signup')
   async signUp(
-    @Body(ValidationPipe) createUserDto: CreateUserDto,
+    @Body() createUserDto: CreateUserDto,
   ): Promise<{ message: string }> {
     await this.authService.signUp(createUserDto);
     return {
@@ -30,7 +23,7 @@ export class AuthController {
   @Public()
   @Post('/login')
   async signIn(
-    @Body(ValidationPipe) credentiaslsDto: CredentialsDto,
+    @Body() credentiaslsDto: CredentialsDto,
   ): Promise<{ token: string }> {
     return await this.authService.signIn(credentiaslsDto);
   }
