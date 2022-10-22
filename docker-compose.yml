@@ -11,12 +11,13 @@ services:
     container_name: 'pgsql'
     restart: always
     volumes:
-      - .docker/postgresql/:/var/lib/postgresql/data
+      - .docker/postgresql:/var/lib/postgresql/data
     networks:
       - overlay
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
+      POSTGRES_DB: nestjs
 
   app:
     build:
