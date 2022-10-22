@@ -22,5 +22,6 @@
       "@auth/*": ["./src/auth/*"],
       "@database/*": ["./src/database/*"]
     }
-  }
+  },
+  "exclude": ["node_modules", "dist", ".docker"]
 }

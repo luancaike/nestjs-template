@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 config();
 
 export const dataSource = new DataSource({
-  type: process.env.TYPEORM_CONNECTION as any,
+  type: 'postgres',
   host: process.env.TYPEORM_HOST,
   port: +(process.env.TYPEORM_PORT || 0),
   username: process.env.TYPEORM_USERNAME,
